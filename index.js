@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const logger = require("morgan");
 const cors = require("cors");
 
-// const router = require("./src/routes/index");
+const router = require("./src/routers/index");
 
 const app = express();
 app.use(cors());
@@ -25,5 +25,5 @@ app.use(
   })
 );
 app.use(logger("dev"));
-// app.use(router);
+app.use(router);
 //
