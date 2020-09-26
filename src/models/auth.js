@@ -7,33 +7,33 @@ const jwt = require("jsonwebtoken");
 const authModel = {
   register: (body) => {
     return new Promise((resolve, reject) => {
-      const checkUsername = "SELECT username FROM users WHERE username = ?";
-      db.query(checkUsername, [body.username], (err, data) => {
-        if (data.length) {
-          reject({ msg: "Your name already exist" });
-        } else {
-          bcrypt.genSalt(10, (err, salt) => {
-            if (err) {
+      // const checkUsername = "SELECT email FROM users WHERE email = ?";
+      // db.query(checkUsername, [body.email], (err, data) => {
+      // if (data.length) {
+      // reject({ msg: "Your name already exist" });
+      // } else {
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+          reject(err);
+        }
+        const { password } = body;
+        bcrypt.hash(password, salt, (err, hashedPassword) => {
+          if (err) {
+            reject(err);
+          }
+          const newBody = { ...body, password: hashedPassword };
+          const qs = `START TRANSACTION; INSERT INTO users SET ?; INSERT INTO users_atribute SET user_id = LAST_INSERT_ID(); SELECT id, username, email, image, pin, balance, phone_number FROM users WHERE users.email=?; COMMIT;`;
+          db.query(qs, [newBody, body.email], (err, data) => {
+            if (!err) {
+              resolve(data);
+            } else {
               reject(err);
             }
-            const { password } = body;
-            bcrypt.hash(password, salt, (err, hashedPassword) => {
-              if (err) {
-                reject(err);
-              }
-              const newBody = { ...body, password: hashedPassword };
-              const qs = "INSERT INTO users SET ?";
-              db.query(qs, newBody, (err, data) => {
-                if (!err) {
-                  resolve(data);
-                } else {
-                  reject(err);
-                }
-              });
-            });
           });
-        }
+        });
       });
+      // }
+      // });
     });
   },
   login: (body) => {
