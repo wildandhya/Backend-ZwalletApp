@@ -2,8 +2,8 @@
 
 const connection = require("../configs/config");
 
-let selectQuery = `SELECT users.username, users_atribute.phone_number FROM users JOIN users_atribute ON users.id = 
-users_atribute.user_id`;
+let selectQuery = `SELECT users.username, users_detail.phone_number FROM users JOIN users_detail ON users.id = 
+users_detail.user_id`;
 
 const usersModel = {
   getContact: (query) => {

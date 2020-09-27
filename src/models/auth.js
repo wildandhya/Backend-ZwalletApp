@@ -16,14 +16,15 @@ const authModel = {
         if (err) {
           reject(err);
         }
-        const { password } = body;
+        const { username, email, password } = body;
         bcrypt.hash(password, salt, (err, hashedPassword) => {
           if (err) {
             reject(err);
           }
-          const newBody = { ...body, password: hashedPassword };
-          const qs = `START TRANSACTION; INSERT INTO users SET ?; INSERT INTO users_atribute SET user_id = LAST_INSERT_ID(); SELECT id, username, email, image, pin, balance, phone_number FROM users WHERE users.email=?; COMMIT;`;
-          db.query(qs, [newBody, body.email], (err, data) => {
+         const newBody = { ...body, password: hashedPassword };
+         const qs = ` INSERT INTO users SET ?`;
+          // INSERT INTO users_detail SET user_id = LAST_INSERT_ID(); SELECT image, pin, balance, phone_number FROM users_detail ; COMMIT;
+          db.query(qs, [newBody], (err, data) => {
             if (!err) {
               resolve(data);
             } else {
