@@ -2,8 +2,7 @@
 
 const connection = require("../configs/config");
 
-let selectQuery = `SELECT users.username, users_detail.phone_number FROM users JOIN users_detail ON users.id = 
-users_detail.user_id`;
+let selectQuery = `SELECT username, phone_number, image FROM users `;
 
 const usersModel = {
   getContact: (query) => {
@@ -25,7 +24,7 @@ const usersModel = {
   },
   editProfile: (id, body) => {
     return new Promise((resolve, reject) => {
-      const queryStr = `UPDATE users, users_detail SET ? WHERE users.id = users_detail.user_id AND users.id = ${id}`;
+      const queryStr = `UPDATE users SET ? WHERE users.id = ${id}`;
       connection.query(queryStr, body, (err, data) => {
         if (!err) {
           console.log(data);

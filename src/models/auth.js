@@ -21,9 +21,9 @@ const authModel = {
           if (err) {
             reject(err);
           }
+       
+         const qs = "INSERT INTO users SET ?; ";
          const newBody = { ...body, password: hashedPassword };
-         const qs = ` INSERT INTO users SET ?`;
-          // INSERT INTO users_detail SET user_id = LAST_INSERT_ID(); SELECT image, pin, balance, phone_number FROM users_detail ; COMMIT;
           db.query(qs, [newBody], (err, data) => {
             if (!err) {
               resolve(data);
@@ -45,23 +45,27 @@ const authModel = {
           reject("msg: email not found");
         } else {
           const qs =
-            "SELECT users.email, users.password FROM users WHERE users.email=?";
+            "SELECT users.id, users.username, users.email, users.password FROM users WHERE users.email=?";
           db.query(qs, [body.email], (err, data) => {
+            console.log(data)
             if (err) {
               reject(err);
             }
             if (data.length) {
               bcrypt.compare(body.password, data[0].password, (err, result) => {
                 if (result) {
-                  const { name, email } = body;
-                  //   const { level_id } = data[0];
+                  const {  email } = body;
+                    const { id, username } = data[0];
                   const payload = {
-                    name,
+                    username,
                     email,
                   };
                   const token = jwt.sign(payload, process.env.SECRET_KEY);
                   const msg = "login success";
-                  resolve({ msg, token });
+                  const usernameApi = username
+                  const emailApi = email
+                  // const idApi = id
+                  resolve({ msg, token, username, id});
                 }
                 if (!result) {
                   reject({
@@ -90,7 +94,7 @@ const authModel = {
             reject(err);
           }
           const newBody = { ...body, pin: hashedPin };
-          const qs = `INSERT INTO users SET ? WHERE users.id= ${id}`;
+          const qs = `UPDATE users SET ? WHERE users.id= ${id}`;
           db.query(qs, newBody, (err, data) => {
             if (!err) {
               resolve(data);

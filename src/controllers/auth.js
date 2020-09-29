@@ -8,6 +8,7 @@ const authController = {
       .register(req.body)
       .then((data) => {
         const responseData = {
+          ...req.body,
           msg: "Register succses",
         };
         formResponse.success(res, responseData);
@@ -30,6 +31,10 @@ const authController = {
     authModel
       .createPin(req.params.id, req.body)
       .then((data) => {
+        const responData ={
+          ...req.body,
+          msg:'update success'
+        }
         formResponse.success(res, data);
       })
       .catch((err) => {

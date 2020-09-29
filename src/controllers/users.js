@@ -25,9 +25,13 @@ const usersController = {
   },
   editProfile: (req, res) => {
     usersModel
-      .searchReciever(req.params.id, req.body)
+      .editProfile(req.params.id, req.body)
       .then((data) => {
-        formResponse.success(res, data);
+        const responData ={
+          ...req.body,
+          msg:'update success'
+        }
+        formResponse.success(res, responData);
       })
       .catch((error) => {
         formResponse.error(res, error);
