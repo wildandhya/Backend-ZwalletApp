@@ -2,7 +2,7 @@
 
 const connection = require("../configs/config");
 
-let selectQuery = `SELECT username, phone_number, image FROM users `;
+let selectQuery = `SELECT id, username, phone_number, image, balance FROM users `;
 
 const usersModel = {
   getContact: (query) => {
@@ -22,15 +22,37 @@ const usersModel = {
       });
     });
   },
-  editProfile: (id, body) => {
+  userEdit: (body) => {
     return new Promise((resolve, reject) => {
-      const queryStr = `UPDATE users SET ? WHERE users.id = ${id}`;
-      connection.query(queryStr, body, (err, data) => {
+      const queryStr = `UPDATE users SET ? WHERE users.email = ?`;
+      connection.query(queryStr, [body, body.email], (err, data) => {
         if (!err) {
-          console.log(data);
           resolve(data);
         } else {
           reject(err);
+        }
+      });
+    });
+  },
+  checkPin: (body) => {
+    const {pin ,email} = body
+    let queryStr = `SELECT pin FROM users WHERE email = ? `;
+    return new Promise((resolve, reject) => {
+      connection.query(queryStr, [email], (err, data) => {
+        if (err) {
+          reject(err);          
+        } else {
+          console.log(pin)
+          console.log(data)
+          if(pin === data[0].pin){
+            resolve(data);
+          }else{
+            reject({
+              error:err,
+              msg:'your pin dont match'
+            })
+          }
+
         }
       });
     });

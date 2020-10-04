@@ -39,7 +39,7 @@ const uploadImage = {
   singleUpload: (req, res, next) => {
     const singleUpload = upload.single("image");
     singleUpload(req, res, (err) => {
-      console.log(req.file);
+      // console.log(req.file);
       if (err) {
         res.json({
           msg: err,
