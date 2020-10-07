@@ -1,6 +1,7 @@
 /** @format */
 
 const connection = require("../configs/config");
+const bcrypt = require("bcrypt");
 
 let selectQuery = `SELECT id, username, phone_number, image, balance FROM users `;
 
@@ -52,6 +53,47 @@ const usersModel = {
               msg:'your pin dont match'
             })
           }
+
+        }
+      });
+    });
+  },
+  checkPass: (body) => {
+    const {password ,email, newPassword} = body
+    let queryStr = `SELECT password FROM users WHERE email = ? `;
+    return new Promise((resolve, reject) => {
+      connection.query(queryStr, [email], (err, data) => {
+        if (err) {
+          reject(err);          
+        } else {
+          console.log(data)
+          bcrypt.compare(password, data[0].password, (err, result) => {
+            if (!result) {
+              reject("password is incorect");
+            }
+            if (result) {
+              const queryUpdate = `UPDATE users set password=? WHERE email=?`;
+              bcrypt.genSalt(10, (err, salt) => {
+                if (err) {
+                  reject(err);
+                }
+                bcrypt.hash(newPassword, salt, (err, hashPass) => {
+                  if (err) {
+                    reject(err);
+                  }
+                  // const newBody = { ...body, password: hashPass };
+                  connection.query(queryUpdate, [hashPass, email], (err, data) => {
+                    if (!err) {
+                      resolve(data);
+                    } else {
+                      reject(err);
+                    }
+                  });
+                })
+              })
+            }
+          })
+          
 
         }
       });

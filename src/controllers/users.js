@@ -53,6 +53,20 @@ const usersController = {
         formResponse.error(res, error);
       });
   },
+  checkPass: (req, res) => {
+    usersModel
+      .checkPass(req.body)
+      .then((data) => {
+        const responData ={
+          ...req.body,
+          msg:'Password Match'
+        }
+        formResponse.success(res, responData);
+      })
+      .catch((error) => {
+        formResponse.error(res, error);
+      });
+  },
 };
 
 module.exports = usersController;

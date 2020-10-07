@@ -10,9 +10,9 @@ const transactionModel = {
     let queryStr = `
     SELECT users.username, users.image, transaction.trans_amount, transaction.transfer_date
     FROM transaction JOIN users ON users.id = transaction.reciever_id 
-    WHERE transaction.sender_id = ${id} ORDER BY transfer_date DESC LIMIT ? OFFSET ?`;
+    WHERE transaction.sender_id = ${id} ORDER BY transfer_date DESC `;
     return new Promise((resolve, reject) => {
-      connection.query(queryStr, [Number(limit), offset], (err, data) => {
+      connection.query(queryStr, (err, data) => {
         if (!err) {
           resolve(data);
         } else {
@@ -52,7 +52,7 @@ const transactionModel = {
   },
   transfer: (body) => {
     return new Promise((resolve, reject) => {
-      const { sender_id, reciever_id, trans_amount, notes } = body;
+      const { sender_id, reciever_id, trans_amount, notes, transfer_date } = body;
       let queryStr = `INSERT INTO transaction SET sender_id = ?, reciever_id = ?, trans_amount = ?, notes= ?, transfer_date = NOW() `;
       connection.query(
         queryStr,
