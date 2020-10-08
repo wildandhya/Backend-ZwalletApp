@@ -7,11 +7,7 @@ const jwt = require("jsonwebtoken");
 const authModel = {
   register: (body) => {
     return new Promise((resolve, reject) => {
-      // const checkUsername = "SELECT email FROM users WHERE email = ?";
-      // db.query(checkUsername, [body.email], (err, data) => {
-      // if (data.length) {
-      // reject({ msg: "Your name already exist" });
-      // } else {
+      
       bcrypt.genSalt(10, (err, salt) => {
         if (err) {
           reject(err);
@@ -82,31 +78,49 @@ const authModel = {
       });
     });
   },
-  createPin: (body) => {
+  
+  checkEmail:(body)=>{
+    const {email} = body
+    const checkEmailQuery = `SELECT email FROM users WHERE email = ?`;
     return new Promise((resolve, reject) => {
-      bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-          reject(err);
-        }
-        const { pin, id} = body;
-        bcrypt.hash(pin, salt, (err, hashedPin) => {
+      db.query(checkEmailQuery, [email], (err, data) => {
+        if (!err) {
+          if (data.length) {
+            resolve(data[0]);
+         } else {
+            reject({ msg: 'email not found..!' })
+         }
+          
+        } else {
+          reject(err);         
+          }
+        })
+      })
+    },
+  resetPassword:(body)=>{
+        const {password, email} = body
+        const queryUpdate = `UPDATE users SET password=? WHERE email=?`;
+        return new Promise((resolve, reject) => {
+        bcrypt.genSalt(10, (err, salt) => {
           if (err) {
             reject(err);
           }
-          const newBody = { ...body, pin: hashedPin };
-          const qs = `UPDATE users SET ? WHERE id= ?`;
-          db.query(qs, [newBody, id], (err, data) => {
-            if (!err) {
-              // console.log(data)
-              resolve(data);
-            } else {
+          bcrypt.hash(password, salt, (err, hashPass) => {
+            if (err) {
               reject(err);
             }
-          });
-        });
-      });
-    });
-  },
+            db.query(queryUpdate, [hashPass, email], (err, data) => {
+              if (!err) {
+                resolve(data);
+              } else {
+                reject(err);
+              }
+            });
+          })
+        })
+        })
+  }
+
 };
 
 module.exports = authModel;

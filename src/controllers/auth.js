@@ -28,14 +28,27 @@ const authController = {
         formResponse.error(res, err);
       });
   },
-  createPin: (req, res) => {
+  checkEmail: (req, res) => {
     authModel
-      .createPin(req.body)
+      .checkEmail(req.body)
       .then((data) => {
-        // console.log(req.body)
         const responData ={
           ...req.body,
-          msg:'create pin success'
+          msg:'your email match'
+        }
+        formResponse.success(res, responData);
+      })
+      .catch((err) => {
+        formResponse.error(res, err);
+      });
+  },
+  resetPassword: (req, res) => {
+    authModel
+      .resetPassword(req.body)
+      .then((data) => {
+        const responData ={
+          ...req.body,
+          msg:'your password was successfuly updated'
         }
         formResponse.success(res, responData);
       })

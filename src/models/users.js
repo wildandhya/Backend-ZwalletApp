@@ -35,6 +35,30 @@ const usersModel = {
       });
     });
   },
+  editImage: (body) => {
+    return new Promise((resolve, reject) => {
+      const queryStr = `UPDATE users SET image=? WHERE email = ?`;
+      connection.query(queryStr, [body.image, body.email], (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  },
+  editPin: (body) => {
+    return new Promise((resolve, reject) => {
+      const queryStr = `UPDATE users SET pin=? WHERE email = ?`;
+      connection.query(queryStr, [body.pin, body.email], (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  },
   checkPin: (body) => {
     const {pin ,email} = body
     let queryStr = `SELECT pin FROM users WHERE email = ? `;
