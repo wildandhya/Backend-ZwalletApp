@@ -109,6 +109,7 @@ const authModel = {
             if (err) {
               reject(err);
             }
+            // const bodyNew = {...body, password:hashPass}
             db.query(queryUpdate, [hashPass, email], (err, data) => {
               if (!err) {
                 resolve(data);
