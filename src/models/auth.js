@@ -120,7 +120,26 @@ const authModel = {
           })
         })
         })
-  }
+  },
+  sendEmail:(body)=>{
+    const qs = `SELECT id, email FROM users WHERE email=?`;
+    return new Promise((resolve, reject) => {
+        db.query(qs, [body.email], (err, data) => {
+          if (err) {
+            reject(err);
+          } 
+          if (data.length){
+            var otp = Math.random()
+            otp = otp * 10000
+            otp = parseInt(otp)
+            console.log(otp)
+            resolve({email:data[0].email, otp: otp});
+          }
+        });
+      })
+},
+
+  
 
 };
 
