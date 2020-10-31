@@ -2,6 +2,7 @@
 
 const multer = require("multer");
 const path = require("path");
+require("dotenv/config");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -46,7 +47,7 @@ const uploadImage = {
         });
       } else {
         try {
-          req.body.image = `http://localhost:8000/images/${req.file.filename}`;
+          req.body.image = `http://localhost:7000/images/${req.file.filename}`;
         } catch (err) {
           console.log(err);
         } finally {
