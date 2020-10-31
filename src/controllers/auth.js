@@ -61,7 +61,7 @@ const authController = {
   },
   sendEmail: (req, res) => {
     authModel
-      .sendEmail(req.body)
+      .sendEmail(req.query)
       .then((data) => {
         const transporter = nodemailer.createTransport({
           service:"gmail",
@@ -71,8 +71,6 @@ const authController = {
           }
         })
 
-        console.log(data.email)
-        console.log(data.otp)
         const mailOptions = {
           from: 'zwalletapps@gmail.com',
           to: data.email,
@@ -84,7 +82,7 @@ const authController = {
           if(error){
             console.log(error)
           }else{
-            console.log('Email Sent: ' + info.response)
+            console.log(info.response)
           }
         })
         formResponse.success(res, data);

@@ -8,11 +8,13 @@ const transactionModel = {
     const limit = query.limit
     const offset = (page - 1) * query.limit
     let queryStr = `
-    SELECT users.username, users.image, transaction.trans_amount, transaction.transfer_date
+    SELECT users.id,  transaction.reciever_id, users.username, users.image, transaction.trans_amount, transaction.transfer_date
     FROM transaction JOIN users ON users.id = transaction.reciever_id 
-    WHERE transaction.sender_id = ${id} ORDER BY transfer_date DESC `;
+    WHERE transaction.sender_id = ? UNION  SELECT users.id, transaction.reciever_id, users.username, users.image, transaction.trans_amount, transaction.transfer_date
+    FROM transaction JOIN users ON users.id = transaction.sender_id 
+    WHERE transaction.reciever_id = ? ORDER BY transfer_date DESC `;
     return new Promise((resolve, reject) => {
-      connection.query(queryStr, (err, data) => {
+      connection.query(queryStr,[Number(query.sender_id), Number(query.reciever_id)], (err, data) => {
         if (!err) {
           resolve(data);
         } else {

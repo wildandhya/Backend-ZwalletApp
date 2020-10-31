@@ -121,10 +121,11 @@ const authModel = {
         })
         })
   },
-  sendEmail:(body)=>{
-    const qs = `SELECT id, email FROM users WHERE email=?`;
+  sendEmail:(query)=>{
+    const email = query.email
+    const qs = `SELECT id, email FROM users WHERE email = ?`;
     return new Promise((resolve, reject) => {
-        db.query(qs, [body.email], (err, data) => {
+        db.query(qs, [email],(err, data) => {
           if (err) {
             reject(err);
           } 
@@ -132,8 +133,9 @@ const authModel = {
             var otp = Math.random()
             otp = otp * 10000
             otp = parseInt(otp)
-            console.log(otp)
-            resolve({email:data[0].email, otp: otp});
+            resolve({email:data[0].email, otp: otp, msg:'Email Valid'});
+          }else{
+            reject({msg:'Invalid Email'})
           }
         });
       })
