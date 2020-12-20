@@ -13,7 +13,8 @@ const router = require("./src/routers/index");
 const app = express();
 app.use(cors());
 //
-app.listen(process.env.port, () => {
+const PORT = process.env.port || 8000
+app.listen(port, () => {
   console.log(`server is running `);
 });
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "",
     "start": "node index.js",
-    "server": "nodemon index.js"
+    "server": "node index.js"
   },
   "author": "wildan",
   "license": "ISC",
@@ -22,5 +22,8 @@
     "mysql": "^2.18.1",
     "nodemailer": "^6.4.14",
     "nodemon": "^2.0.4"
+  },
+  "engines": {
+    "node": "v14.15.1"
   }
 }
